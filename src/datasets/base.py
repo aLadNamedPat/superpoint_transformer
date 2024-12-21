@@ -874,6 +874,7 @@ class BaseDataset(InMemoryDataset):
         # To be as fast as possible, we read only the last level of each
         # NAG, and accumulate the class counts from the label histograms
         counts = torch.zeros(self.num_classes)
+
         for i in range(len(self)):
             if self.in_memory:
                 y = self.in_memory_data[i][low].y
