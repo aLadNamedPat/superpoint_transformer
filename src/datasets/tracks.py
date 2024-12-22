@@ -68,7 +68,6 @@ def read_tracks_tile(
             # Heuristic to bring the intensity distribution in [0, 1]
             data.intensity = torch.FloatTensor(
                 tile[key]['intensity']).clip(min=0, max=60000) / 60000
-
         if semantic:
             y = torch.LongTensor(tile[key]['classification'])
             data.y = torch.from_numpy(ID2TRAINID)[y] if remap else y

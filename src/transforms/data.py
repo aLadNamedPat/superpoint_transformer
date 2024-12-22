@@ -200,8 +200,14 @@ class AddKeysTo(Transform):
 
     def _process_single_key(self, data, key, to):
         # Read existing features and the attribute of interest
+        print("DATA TYPE")
+        print(type(data))
+        print(data)
+        print(len(data))
+        print(key)
         feat = getattr(data, key, None)
         x = getattr(data, to, None)
+        
         # Skip if the attribute is None
         if feat is None:
             if self.strict:
