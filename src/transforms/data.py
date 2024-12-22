@@ -202,7 +202,6 @@ class AddKeysTo(Transform):
         # Read existing features and the attribute of interest
         feat = getattr(data, key, None)
         x = getattr(data, to, None)
-
         # Skip if the attribute is None
         if feat is None:
             if self.strict:

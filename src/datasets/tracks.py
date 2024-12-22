@@ -64,7 +64,6 @@ def read_tracks_tile(
             pos_offset = pos[0]
             data.pos = pos - pos_offset
             data.pos_offset = pos_offset
-
         if intensity:
             # Heuristic to bring the intensity distribution in [0, 1]
             data.intensity = torch.FloatTensor(
@@ -73,7 +72,7 @@ def read_tracks_tile(
         if semantic:
             y = torch.LongTensor(tile[key]['classification'])
             data.y = torch.from_numpy(ID2TRAINID)[y] if remap else y
-
+        # print("DEBUG: data.intensity =", data.intensity.shape if data.intensity is not None else None)
     return data
 
 
@@ -177,7 +176,7 @@ class TRACKS(BaseDataset):
         This applies to both `Data.y` and `Data.obj.y`.
         """
         return read_tracks_tile(
-            raw_cloud_path, intensity=False, semantic=True,
+            raw_cloud_path, intensity=True, semantic=True,
             remap=False)
     
     def download_dataset(self) -> None:
