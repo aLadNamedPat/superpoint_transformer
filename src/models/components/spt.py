@@ -713,11 +713,7 @@ class SPT(nn.Module):
                 self.h_edge_mlps[int(self.nano):],
                 self.v_edge_mlps))
             
-            print("Number of layers:")
-            print(min(len(self.down_stages), len(self.node_mlps[int(self.nano):]), len(self.h_edge_mlps[int(self.nano):]), len(self.v_edge_mlps)))
-            print("ENUMERATE LAYERS")
             for i_stage, (stage, node_mlp, h_edge_mlp, v_edge_mlp) in enum:
-                print(i_stage)
                 # Forward on the down stage and the corresponding NAG
                 # level
                 i_level = i_stage + 1

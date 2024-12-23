@@ -4,6 +4,9 @@ defaults:
 
 _target_: src.datamodules.tracks.TRACKSDataModule
 
+dataloader:
+    batch_size: 4
+
 # These parameters are not actually used by the DataModule, but are used
 # here to facilitate model parameterization with config interpolation
 num_classes: 8
