@@ -2,17 +2,16 @@ import numpy as np
 
 
 CLASS_NAMES = [
-    "class_0",
-    "class_1",
-    "class_2",
-    "class_3",
-    "class_4",
-    "class_5",
-    "class_6",
-    "class_7",
-    "class_8",
-    "class_9",
-    "class_10"
+    "Ground",
+    "Vegetation",
+    "Rail",
+    "Poles",
+    "Wires",
+    "Signalling",
+    "Fence",
+    "Installation",
+    "Building",
+    "Unknown"
 ]
 
 CLASS_COLORS = [
@@ -26,14 +25,13 @@ CLASS_COLORS = [
     [106, 0, 228],     # class_7
     [255, 255, 255],   # class_8
     [0, 255, 0],       # class_9  (Bright Green)
-    [255, 165, 0]      # class_10 (Orange)
 ]
 
-TRACK_NUM_CLASSES = 10
+TRACK_NUM_CLASSES = 9
 
-STUFF_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+STUFF_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
-ID2TRAINID = np.asarray([8, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+ID2TRAINID = np.asarray([9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
 
 TILES = {
     'train' : [
