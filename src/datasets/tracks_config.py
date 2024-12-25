@@ -10,26 +10,30 @@ CLASS_NAMES = [
     "class_5",
     "class_6",
     "class_7",
-    "void"
+    "class_8",
+    "class_9",
+    "class_10"
 ]
 
 CLASS_COLORS = [
-    [70, 130, 180],   # class_0
-    [220, 20, 60],    # class_1
-    [119, 11, 32],    # class_2
-    [0, 0, 142],      # class_3
-    [0, 60, 100],     # class_4
-    [0, 80, 100],     # class_5
-    [0, 0, 230],      # class_6
-    [106, 0, 228],    # class_7
-    [255, 255, 255]
+    [70, 130, 180],    # class_0
+    [220, 20, 60],     # class_1
+    [119, 11, 32],     # class_2
+    [0, 0, 142],       # class_3
+    [0, 60, 100],      # class_4
+    [0, 80, 100],      # class_5
+    [0, 0, 230],       # class_6
+    [106, 0, 228],     # class_7
+    [255, 255, 255],   # class_8
+    [0, 255, 0],       # class_9  (Bright Green)
+    [255, 165, 0]      # class_10 (Orange)
 ]
 
-TRACK_NUM_CLASSES = 8
+TRACK_NUM_CLASSES = 10
 
-STUFF_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7]
+STUFF_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-ID2TRAINID = np.asarray([8, 0, 1, 2, 3, 4, 5, 6, 7])
+ID2TRAINID = np.asarray([8, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
 TILES = {
     'train' : [
