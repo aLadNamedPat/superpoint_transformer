@@ -11,6 +11,7 @@ CLASS_NAMES = [
     "Fence",
     "Installation",
     "Building",
+    "void"
 ]
 
 CLASS_COLORS = [
@@ -23,13 +24,14 @@ CLASS_COLORS = [
     [0, 0, 230],       # class_6
     [106, 0, 228],     # class_7
     [255, 255, 255],   # class_8
+    [0, 255, 0]        # void
 ]
 
 TRACK_NUM_CLASSES = 9
 
 STUFF_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
-ID2TRAINID = np.asarray([0, 1, 2, 3, 4, 5, 6, 7, 8])
+ID2TRAINID = np.asarray([9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
 
 TILES = {
     'train' : [
