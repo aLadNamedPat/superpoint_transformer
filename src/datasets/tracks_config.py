@@ -2,16 +2,16 @@ import numpy as np
 
 
 CLASS_NAMES = [
-    "Ground",
-    "Vegetation",
-    "Rail",
-    "Poles",
-    "Wires",
-    "Signalling",
-    "Fence",
-    "Installation",
-    "Building",
-    "void"
+    "class_0",
+    "class_1",
+    "class_2",
+    "class_3",
+    "class_4",
+    "class_5",
+    "class_6",
+    "class_7",
+    "class_8",
+    # "void"
 ]
 
 CLASS_COLORS = [
@@ -24,7 +24,7 @@ CLASS_COLORS = [
     [0, 0, 230],       # class_6
     [106, 0, 228],     # class_7
     [255, 255, 255],   # class_8
-    [0, 255, 0]        # void
+    # [0, 255, 0]        # void
 ]
 
 TRACK_NUM_CLASSES = 9
