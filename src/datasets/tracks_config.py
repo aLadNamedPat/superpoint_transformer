@@ -25,9 +25,9 @@ CLASS_COLORS = [
     [255, 255, 255],   # class_8
 ]
 
-TRACK_NUM_CLASSES = 8
+TRACK_NUM_CLASSES = 9
 
-STUFF_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7]
+STUFF_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 ID2TRAINID = np.asarray([0, 1, 2, 3, 4, 5, 6, 7, 8])
 
