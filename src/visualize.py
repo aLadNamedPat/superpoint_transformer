@@ -1,5 +1,5 @@
 import hydra
-from src.utils import init_config
+from utils import init_config
 import torch
 
 # 1. Init config
