@@ -43,7 +43,9 @@ import torch_geometric
 from omegaconf import OmegaConf, DictConfig
 from pytorch_lightning import LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import Logger
-
+from plyfile import PlyData, PlyElement
+import numpy as np
+import os
 from src import utils
 
 # Registering the "eval" resolver allows for advanced config
@@ -53,6 +55,74 @@ if not OmegaConf.has_resolver('eval'):
     OmegaConf.register_new_resolver('eval', eval)
 
 log = utils.get_pylogger(__name__)
+
+def save_classified_ply(data: torch_geometric.data.Data, pred_labels: torch.Tensor, output_dir: str):
+    """
+    Saves a classified PLY file with predicted labels.
+
+    Args:
+        data (torch_geometric.data.Data): The input data object containing point cloud data.
+        pred_labels (torch.Tensor): Predicted labels for each point.
+        output_dir (str): Directory to save the classified PLY file.
+    """
+    original_ply_path = data.file_path
+    output_ply_path = get_output_ply_path(original_ply_path, output_dir)
+
+    # Ensure the output directory exists
+    os.makedirs(os.path.dirname(output_ply_path), exist_ok=True)
+
+    # Read the original PLY file
+    plydata = PlyData.read(original_ply_path)
+    vertex_data = plydata['vertex'].data
+
+    # Verify the number of points matches
+    num_vertices = len(vertex_data)
+    if len(pred_labels) != num_vertices:
+        log.error(f"Number of predictions ({len(pred_labels)}) does not match number of vertices ({num_vertices}) in '{original_ply_path}'.")
+        return
+
+    # Define new data type with an additional 'pred' property
+    # Assuming pred_labels are integers and num_classes <= 255
+    new_dtype = vertex_data.dtype.descr + [('pred', 'u1')]
+    new_vertex_data = np.empty(num_vertices, dtype=new_dtype)
+
+    # Copy existing data
+    for name in vertex_data.dtype.names:
+        new_vertex_data[name] = vertex_data[name]
+
+    # Add predictions
+    new_vertex_data['pred'] = pred_labels.numpy().astype(np.uint8)
+
+    # Create a new PlyElement
+    new_vertex_element = PlyElement.describe(new_vertex_data, 'vertex')
+
+    # Determine original file format (binary or ASCII)
+    is_binary = plydata.header.get('format', '').startswith('binary')
+
+    # Create a new PlyData object
+    new_plydata = PlyData([new_vertex_element], text=not is_binary)
+
+    # Write to the output PLY file
+    try:
+        new_plydata.write(output_ply_path)
+        log.info(f"Saved classified PLY to '{output_ply_path}'.")
+    except Exception as e:
+        log.error(f"Failed to write classified PLY '{output_ply_path}': {e}")
+
+def get_output_ply_path(original_ply_path: str, output_dir: str) -> str:
+    """
+    Generates the output PLY file path based on the original PLY file path.
+
+    Args:
+        original_ply_path (str): Path to the original PLY file.
+        output_dir (str): Directory to save the classified PLY file.
+
+    Returns:
+        str: Path to the output classified PLY file.
+    """
+    filename = os.path.basename(original_ply_path)
+    classified_filename = f"classified_{filename}"
+    return os.path.join(output_dir, classified_filename)
 
 
 @utils.task_wrapper
@@ -102,8 +172,16 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
         log.info("Compiling model!")
         model = torch.compile(model, dynamic=True)
 
+    # log.info("Starting testing!")
+    # trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
+
     log.info("Starting testing!")
-    trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
+    predictions = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
+
+
+    log.info("Processing and saving predictions...")
+    for data, pred in zip(datamodule.dataset, predictions):
+        save_classified_ply(data, pred, output_dir=cfg.get("output_dir", "./classified_ply"))
 
     # for predictions use trainer.predict(...)
     # predictions = trainer.predict(model=model, dataloaders=dataloaders, ckpt_path=cfg.ckpt_path)

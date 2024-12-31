@@ -28,6 +28,8 @@ compile: False
 # passing checkpoint path is necessary for evaluation
 ckpt_path: ???
 
+output_dir: "./classified_ply"  # Default output directory for classified PLY files
+
 # float32 precision operations (torch>=2.0)
 # see https://pytorch.org/docs/2.0/generated/torch.set_float32_matmul_precision.html
 float32_matmul_precision: high
