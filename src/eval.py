@@ -177,22 +177,45 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
 
     log.info("Starting testing!")
     predictions = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
-    
+
     log.info("Processing and saving predictions...")
     output_dir = cfg.get("output_dir", "./classified_ply")
-    for pred in predictions:
-        data = pred[0]  # Assuming predict_step returns (batch, output)
-        output = pred[1]
-        
+    for idx, pred in enumerate(predictions):
+        data = pred[0]  # Extract the Data object
+        output = pred[1]  # Extract the model's output
+
+        # Debugging: Log the type and structure of output.logits
+        if hasattr(output, 'logits'):
+            log.debug(f"Prediction {idx}: output.logits type: {type(output.logits)}")
+            if isinstance(output.logits, list):
+                log.debug(f"Prediction {idx}: output.logits list length: {len(output.logits)}")
+                for i, tensor in enumerate(output.logits):
+                    log.debug(f"Prediction {idx}: output.logits[{i}] shape: {tensor.shape}")
+            elif isinstance(output.logits, torch.Tensor):
+                log.debug(f"Prediction {idx}: output.logits shape: {output.logits.shape}")
+        else:
+            log.debug(f"Prediction {idx}: No 'logits' attribute in output.")
+
         # Extract predicted labels from output
         if hasattr(output, 'logits'):
-            pred_labels = torch.argmax(output.logits, dim=1)
+            logits = output.logits
+            if isinstance(logits, list):
+                # Concatenate if logits is a list of tensors
+                logits = torch.cat(logits, dim=0)
+            elif isinstance(logits, torch.Tensor):
+                pass  # logits is already a tensor
+            else:
+                log.error(f"Unexpected logits type: {type(logits)} in prediction {idx}")
+                continue
+
+            pred_labels = torch.argmax(logits, dim=1)
         elif isinstance(output, torch.Tensor):
             pred_labels = torch.argmax(output, dim=1)
         else:
-            log.error(f"Unexpected output format: {type(output)}")
+            log.error(f"Unexpected output format: {type(output)} in prediction {idx}")
             continue
 
+        # Save the classified PLY file
         save_classified_ply(data, pred_labels, output_dir=output_dir)
 
     # for predictions use trainer.predict(...)
