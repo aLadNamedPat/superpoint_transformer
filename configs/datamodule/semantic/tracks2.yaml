@@ -10,7 +10,7 @@ num_classes: 10
 stuff_classes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 trainval: True
 val_on_test: True
-xy_tiling: 3
+xy_tiling: 2
 
 # Features that will be computed, saved, loaded for points and segments
 
@@ -60,7 +60,7 @@ v_edge_hf: []  # vertical edge features used for training
 
 # Parameters declared here to facilitate tuning configs without copying
 # all the pre_transforms
-voxel: 0.08
+voxel: 0.1
 knn: 25
 knn_r: 10
 knn_step: -1
