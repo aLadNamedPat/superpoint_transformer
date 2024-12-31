@@ -69,7 +69,11 @@ def save_classified_ply(data: torch_geometric.data.Data, pred_labels: torch.Tens
     # Check if data is a batch
     if isinstance(data, Batch):
         # Convert batch to list of individual Data objects
-        data_list = data.to_data_list()
+        try:
+            data_list = data.to_data_list()
+        except AttributeError:
+            log.error("Batch object does not support 'to_data_list()'. Please implement this method.")
+            return
     else:
         # Single Data object
         data_list = [data]
@@ -79,7 +83,19 @@ def save_classified_ply(data: torch_geometric.data.Data, pred_labels: torch.Tens
 
     for individual_data in data_list:
         # Number of points in the current Data object
-        num_points = individual_data.num_points
+        num_points_attr = individual_data.num_points
+
+        # Handle different types of num_points
+        if isinstance(num_points_attr, (list, tuple)):
+            # Assuming the first element is the number of points at the base level
+            num_points = num_points_attr[0]
+        elif isinstance(num_points_attr, torch.Tensor):
+            num_points = num_points_attr.item()
+        elif isinstance(num_points_attr, int):
+            num_points = num_points_attr
+        else:
+            log.error(f"Unsupported type for num_points: {type(num_points_attr)} in Data object.")
+            continue
 
         # Extract corresponding predicted labels
         individual_pred_labels = pred_labels[current_idx:current_idx + num_points]
@@ -140,6 +156,7 @@ def save_classified_ply(data: torch_geometric.data.Data, pred_labels: torch.Tens
         except Exception as e:
             log.error(f"Failed to write classified PLY '{output_ply_path}': {e}")
 
+            
 def get_output_ply_path(original_ply_path: str, output_dir: str) -> str:
     """
     Generates the output PLY file path based on the original PLY file path.
