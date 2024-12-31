@@ -181,10 +181,11 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
     log.info("Processing and saving predictions...")
     output_dir = cfg.get("output_dir", "./classified_ply")
     for pred in predictions:
+        print(pred)
         data = pred['data']
         pred_labels = pred['pred']
         save_classified_ply(data, pred_labels, output_dir=output_dir)
-        
+
     # for predictions use trainer.predict(...)
     # predictions = trainer.predict(model=model, dataloaders=dataloaders, ckpt_path=cfg.ckpt_path)
 
