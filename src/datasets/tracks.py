@@ -59,8 +59,9 @@ def read_tracks_tile(
         tile = PlyData.read(f)
         if xyz:
             pos = torch.stack([
-                torch.FloatTensor(tile[key][axis])
-                for axis in ["x", "y", "z"]], dim=-1)
+                torch.from_numpy(tile[key][axis].copy()).float()
+                for axis in ["x", "y", "z"]
+            ], dim=-1)
             pos_offset = pos[0]
             data.pos = pos - pos_offset
             data.pos_offset = pos_offset
