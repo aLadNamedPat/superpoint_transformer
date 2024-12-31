@@ -179,9 +179,12 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
     predictions = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
 
     log.info("Processing and saving predictions...")
-    for data, pred in zip(datamodule.dataset, predictions):
-        save_classified_ply(data, pred, output_dir=cfg.get("output_dir", "./classified_ply"))
-
+    output_dir = cfg.get("output_dir", "./classified_ply")
+    for pred in predictions:
+        data = pred['data']
+        pred_labels = pred['pred']
+        save_classified_ply(data, pred_labels, output_dir=output_dir)
+        
     # for predictions use trainer.predict(...)
     # predictions = trainer.predict(model=model, dataloaders=dataloaders, ckpt_path=cfg.ckpt_path)
 
