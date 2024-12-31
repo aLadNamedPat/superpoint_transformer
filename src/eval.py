@@ -101,6 +101,7 @@ def save_classified_ply(data: torch_geometric.data.Data, pred_labels: torch.Tens
         individual_pred_labels = pred_labels[current_idx:current_idx + num_points]
         current_idx += num_points
 
+        print(individual_data)
         # Access the file path
         original_ply_path = getattr(individual_data, 'file_path', None)
         if original_ply_path is None:
