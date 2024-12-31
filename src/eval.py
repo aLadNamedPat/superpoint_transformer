@@ -65,6 +65,9 @@ def save_classified_ply(data: torch_geometric.data.Data, pred_labels: torch.Tens
         pred_labels (torch.Tensor): Predicted labels for each point.
         output_dir (str): Directory to save the classified PLY file.
     """
+
+    print(data)
+    print(type(data))
     original_ply_path = data.file_path
     output_ply_path = get_output_ply_path(original_ply_path, output_dir)
 
