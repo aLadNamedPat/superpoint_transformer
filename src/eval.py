@@ -177,13 +177,22 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
 
     log.info("Starting testing!")
     predictions = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
-
+    
     log.info("Processing and saving predictions...")
     output_dir = cfg.get("output_dir", "./classified_ply")
     for pred in predictions:
-        print(pred)
-        data = pred['data']
-        pred_labels = pred['pred']
+        data = pred[0]  # Assuming predict_step returns (batch, output)
+        output = pred[1]
+        
+        # Extract predicted labels from output
+        if hasattr(output, 'logits'):
+            pred_labels = torch.argmax(output.logits, dim=1)
+        elif isinstance(output, torch.Tensor):
+            pred_labels = torch.argmax(output, dim=1)
+        else:
+            log.error(f"Unexpected output format: {type(output)}")
+            continue
+
         save_classified_ply(data, pred_labels, output_dir=output_dir)
 
     # for predictions use trainer.predict(...)
