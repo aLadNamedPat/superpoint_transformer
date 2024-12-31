@@ -176,9 +176,11 @@ class TRACKS(BaseDataset):
         while `y < 0` AND `y >= self.num_classes` ARE VOID LABELS.
         This applies to both `Data.y` and `Data.obj.y`.
         """
-        return read_tracks_tile(
+        data = read_tracks_tile(
             raw_cloud_path, intensity=True, semantic=True,
             remap=False)
+        data.file_path = raw_cloud_path  # Add the file path attribute
+        return data
     
     def download_dataset(self) -> None:
         pass

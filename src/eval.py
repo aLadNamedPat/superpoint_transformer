@@ -178,7 +178,6 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
     log.info("Starting testing!")
     predictions = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
 
-
     log.info("Processing and saving predictions...")
     for data, pred in zip(datamodule.dataset, predictions):
         save_classified_ply(data, pred, output_dir=cfg.get("output_dir", "./classified_ply"))
