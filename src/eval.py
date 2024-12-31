@@ -47,6 +47,7 @@ from plyfile import PlyData, PlyElement
 import numpy as np
 import os
 from src import utils
+from torch_geometric.data import Data, Batch
 
 # Registering the "eval" resolver allows for advanced config
 # interpolation with arithmetic operations:
@@ -58,59 +59,86 @@ log = utils.get_pylogger(__name__)
 
 def save_classified_ply(data: torch_geometric.data.Data, pred_labels: torch.Tensor, output_dir: str):
     """
-    Saves a classified PLY file with predicted labels.
+    Saves classified PLY files with predicted labels, handling both single and batched data.
 
     Args:
-        data (torch_geometric.data.Data): The input data object containing point cloud data.
+        data (torch_geometric.data.Data or Batch): The input data object or batch containing point cloud data.
         pred_labels (torch.Tensor): Predicted labels for each point.
-        output_dir (str): Directory to save the classified PLY file.
+        output_dir (str): Directory to save the classified PLY files.
     """
+    # Check if data is a batch
+    if isinstance(data, Batch):
+        # Convert batch to list of individual Data objects
+        data_list = data.to_data_list()
+    else:
+        # Single Data object
+        data_list = [data]
 
-    print(data)
-    print(type(data))
-    original_ply_path = data.file_path
-    output_ply_path = get_output_ply_path(original_ply_path, output_dir)
+    # Initialize index to keep track of pred_labels
+    current_idx = 0
 
-    # Ensure the output directory exists
-    os.makedirs(os.path.dirname(output_ply_path), exist_ok=True)
+    for individual_data in data_list:
+        # Number of points in the current Data object
+        num_points = individual_data.num_points
 
-    # Read the original PLY file
-    plydata = PlyData.read(original_ply_path)
-    vertex_data = plydata['vertex'].data
+        # Extract corresponding predicted labels
+        individual_pred_labels = pred_labels[current_idx:current_idx + num_points]
+        current_idx += num_points
 
-    # Verify the number of points matches
-    num_vertices = len(vertex_data)
-    if len(pred_labels) != num_vertices:
-        log.error(f"Number of predictions ({len(pred_labels)}) does not match number of vertices ({num_vertices}) in '{original_ply_path}'.")
-        return
+        # Access the file path
+        original_ply_path = getattr(individual_data, 'file_path', None)
+        if original_ply_path is None:
+            log.error("Data object does not have 'file_path' attribute.")
+            continue
 
-    # Define new data type with an additional 'pred' property
-    # Assuming pred_labels are integers and num_classes <= 255
-    new_dtype = vertex_data.dtype.descr + [('pred', 'u1')]
-    new_vertex_data = np.empty(num_vertices, dtype=new_dtype)
+        # Generate output PLY path
+        output_ply_path = get_output_ply_path(original_ply_path, output_dir)
 
-    # Copy existing data
-    for name in vertex_data.dtype.names:
-        new_vertex_data[name] = vertex_data[name]
+        # Ensure the output directory exists
+        os.makedirs(os.path.dirname(output_ply_path), exist_ok=True)
 
-    # Add predictions
-    new_vertex_data['pred'] = pred_labels.numpy().astype(np.uint8)
+        # Read the original PLY file
+        try:
+            plydata = PlyData.read(original_ply_path)
+        except Exception as e:
+            log.error(f"Failed to read PLY file '{original_ply_path}': {e}")
+            continue
 
-    # Create a new PlyElement
-    new_vertex_element = PlyElement.describe(new_vertex_data, 'vertex')
+        vertex_data = plydata['vertex'].data
 
-    # Determine original file format (binary or ASCII)
-    is_binary = plydata.header.get('format', '').startswith('binary')
+        # Verify the number of points matches
+        num_vertices = len(vertex_data)
+        if len(individual_pred_labels) != num_vertices:
+            log.error(f"Number of predictions ({len(individual_pred_labels)}) does not match number of vertices ({num_vertices}) in '{original_ply_path}'.")
+            continue
 
-    # Create a new PlyData object
-    new_plydata = PlyData([new_vertex_element], text=not is_binary)
+        # Define new data type with an additional 'pred' property
+        # Adjust 'u1' to 'u2' if you have more than 255 classes
+        new_dtype = vertex_data.dtype.descr + [('pred', 'u1')]
+        new_vertex_data = np.empty(num_vertices, dtype=new_dtype)
 
-    # Write to the output PLY file
-    try:
-        new_plydata.write(output_ply_path)
-        log.info(f"Saved classified PLY to '{output_ply_path}'.")
-    except Exception as e:
-        log.error(f"Failed to write classified PLY '{output_ply_path}': {e}")
+        # Copy existing data
+        for name in vertex_data.dtype.names:
+            new_vertex_data[name] = vertex_data[name]
+
+        # Add predictions
+        new_vertex_data['pred'] = individual_pred_labels.cpu().numpy().astype(np.uint8)
+
+        # Create a new PlyElement
+        new_vertex_element = PlyElement.describe(new_vertex_data, 'vertex')
+
+        # Determine original file format (binary or ASCII)
+        is_binary = plydata.header.get('format', '').startswith('binary')
+
+        # Create a new PlyData object
+        new_plydata = PlyData([new_vertex_element], text=not is_binary)
+
+        # Write to the output PLY file
+        try:
+            new_plydata.write(output_ply_path)
+            log.info(f"Saved classified PLY to '{output_ply_path}'.")
+        except Exception as e:
+            log.error(f"Failed to write classified PLY '{output_ply_path}': {e}")
 
 def get_output_ply_path(original_ply_path: str, output_dir: str) -> str:
     """
