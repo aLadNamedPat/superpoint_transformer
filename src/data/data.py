@@ -635,6 +635,7 @@ class Data(PyGData):
             elif isinstance(val, torch.Tensor):
                 save_tensor(val, f, k, fp_dtype=fp_dtype)
             else:
+                print(val)
                 raise NotImplementedError(
                     f"Cannot save attribute {k} with unsupported type "
                     f"{type(val)}")
