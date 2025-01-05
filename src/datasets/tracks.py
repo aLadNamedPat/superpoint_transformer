@@ -67,10 +67,10 @@ def read_tracks_tile(
             data.pos_offset = pos_offset
         if intensity:
             # Heuristic to bring the intensity distribution in [0, 1]
-            intensity_array = tile[key]['Intensity'].copy()
+            intensity_array = tile[key]['intensity'].copy()
             data.intensity = torch.FloatTensor(intensity_array).clip(min=0, max=60000) / 60000        
         if semantic:
-            classification_array = tile[key]['Classification'].copy()
+            classification_array = tile[key]['classification'].copy()
             y = torch.LongTensor(classification_array)
             data.y = torch.from_numpy(ID2TRAINID)[y] if remap else y
         # print("DEBUG: data.intensity =", data.intensity.shape if data.intensity is not None else None)
