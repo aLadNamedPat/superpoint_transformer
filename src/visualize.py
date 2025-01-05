@@ -18,16 +18,21 @@ task_widget, expe_widget = make_experiment_widgets()
 split_widget = make_split_widget()
 ckpt_widget = make_checkpoint_file_search_widget()
 
+device_widget_value = "cuda"
+task_widget_semantic = "semantic"
+split_widget_value = "test"
+expe_widget_value = "tracks"
+ckpt_widget_value = "logs/epoch_120-v2.ckpt"
 print(f"You chose:")
-print(f"  - device={device_widget.value}")
-print(f"  - task={task_widget.value}")
-print(f"  - split={split_widget.value}")
-print(f"  - experiment={expe_widget.value}")
-print(f"  - ckpt={ckpt_widget.value}")
+print(f"  - device={device_widget_value}")
+print(f"  - task={task_widget_semantic}")
+print(f"  - split={split_widget_value}")
+print(f"  - experiment={expe_widget_value}")
+print(f"  - ckpt={ckpt_widget_value}")
 
 cfg = init_config(overrides=[
-    f"experiment={task_widget.value}/{expe_widget.value}",
-    f"ckpt_path={ckpt_widget.value}",
+    f"datamodule={task_widget_semantic}/{expe_widget_value}",
+    f"ckpt_path={ckpt_widget_value}",
     f"datamodule.load_full_res_idx={True}"  # only when you need full-resolution predictions 
 ])
 
@@ -35,14 +40,14 @@ datamodule = hydra.utils.instantiate(cfg.datamodule)
 datamodule.prepare_data()
 datamodule.setup()
 
-if split_widget.value == 'train':
+if split_widget_value == 'train':
     dataset = datamodule.train_dataset
-elif split_widget.value == 'val':
+elif split_widget_value == 'val':
     dataset = datamodule.val_dataset
-elif split_widget.value == 'test':
+elif split_widget_value == 'test':
     dataset = datamodule.test_dataset
 else:
-    raise ValueError(f"Unknown split '{split_widget.value}'")
+    raise ValueError(f"Unknown split '{split_widget_value}'")
 
 dataset.print_classes()
 
@@ -54,7 +59,7 @@ if ckpt_widget.value is not None:
     model = model._load_from_checkpoint(cfg.ckpt_path)
 
 # Move model to selected device
-model = model.eval().to(device_widget.value)
+model = model.eval().to(device_widget_value)
 
 for t in dataset.on_device_transform.transforms:
     if isinstance(t, NAGAddKeysTo):
@@ -68,7 +73,7 @@ nag = dataset[0]
 # this will select a spherical sample of the larger tile and apply some
 # data augmentations. For the validation and test datasets, this will
 # prepare an entire tile for inference
-nag = dataset.on_device_transform(nag.to(device_widget.value))
+nag = dataset.on_device_transform(nag.to(device_widget_value))
 
 # Inference, returns a task-specific ouput object carrying predictions
 with torch.no_grad():
@@ -78,12 +83,6 @@ with torch.no_grad():
 # based on the predictions on level-1 superpoints and save those for 
 # visualization in the level-0 Data under the 'semantic_pred' attribute
 nag[0].semantic_pred = output.voxel_semantic_pred(super_index=nag[0].super_index)
-
-# Similarly, compute the level-0 panoptic segmentation predictions, if 
-# relevant
-if task_widget.value == 'panoptic':
-    vox_y, vox_index, vox_obj_pred = output.voxel_panoptic_pred(super_index=nag[0].super_index)
-    nag[0].obj_pred = vox_obj_pred
 
 # Predefined radius and center locations for each dataset
 # Feel free to modify these values
