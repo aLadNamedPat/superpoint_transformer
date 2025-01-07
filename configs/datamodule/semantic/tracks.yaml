@@ -88,7 +88,7 @@ graph_se_min: 20
 # graph_cycles: 3
 graph_cycles: 3
 #graph_margin: 0.5
-graph_margin: 0.5s
+graph_margin: 0.5
 # graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 
