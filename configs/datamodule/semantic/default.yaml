@@ -93,7 +93,7 @@ submit: False
 
 # DataLoader parameters. Would be good to have them live in another file
 dataloader:
-    batch_size: 1
-    num_workers: 0
-    pin_memory: False
-    persistent_workers: False
+    batch_size: 4
+    num_workers: 4
+    pin_memory: True
+    persistent_workers: True
