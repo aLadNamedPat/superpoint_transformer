@@ -72,7 +72,7 @@ ground_threshold: 5
 ground_scale: 20
 pcp_regularization: [0.1, 0.2, 0.3]
 # pcp_regularization: [0.005, 0.01, 0.05]
-pcp_spatial_weight: [1e-1, 1e-2, 1e-3]
+pcp_spatial_weight: [1e-2, 1e-3, 1e-4]
 # pcp_spatial_weight: [1e-2, 1e-2, 1e-2]
 pcp_cutoff: [10, 30, 100]
 # pcp_cutoff: [2, 5, 5]
@@ -81,14 +81,14 @@ pcp_w_adjacency: 1
 pcp_iterations: 3
 graph_k_min: 1
 graph_k_max: 30
-# graph_gap: [5, 15, 20]
-graph_gap: [2, 5, 5]
+graph_gap: [5, 15, 20]
+# graph_gap: [2, 5, 5]
 graph_se_ratio: 0.3
 graph_se_min: 20
 # graph_cycles: 3
 graph_cycles: 3
 #graph_margin: 0.5
-graph_margin: 0.1
+graph_margin: 0.5
 # graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 
