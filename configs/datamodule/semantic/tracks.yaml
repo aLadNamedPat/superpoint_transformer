@@ -13,7 +13,7 @@ num_classes: 10
 stuff_classes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 trainval: True
 val_on_test: True
-xy_tiling: 2
+xy_tiling: 1
 
 # Features that will be computed, saved, loaded for points and segments
 
@@ -63,7 +63,7 @@ v_edge_hf: []  # vertical edge features used for training
 
 # Parameters declared here to facilitate tuning configs without copying
 # all the pre_transforms
-voxel: 0.08
+voxel: 0.1
 knn: 25
 knn_r: 10
 knn_step: -1
@@ -72,9 +72,9 @@ ground_threshold: 5
 ground_scale: 20
 pcp_regularization: [0.1, 0.2, 0.3]
 # pcp_regularization: [0.005, 0.01, 0.05]
-pcp_spatial_weight: [1e-2, 1e-3, 1e-4]
+pcp_spatial_weight: [1e-1, 1e-2, 1e-3]
 # pcp_spatial_weight: [1e-2, 1e-2, 1e-2]
-pcp_cutoff: [5, 15, 50]
+pcp_cutoff: [10, 30, 100]
 # pcp_cutoff: [2, 5, 5]
 pcp_k_adjacency: 10
 pcp_w_adjacency: 1
