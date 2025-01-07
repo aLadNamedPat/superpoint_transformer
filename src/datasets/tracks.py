@@ -64,7 +64,7 @@ def read_tracks_tile(
             #     for axis in ["x", "y", "z"]
             # ], dim=-1)
             pos = torch.stack([
-                torch.from_numpy(tile[key][axis]).float()
+                torch.from_numpy(tile[key][axis].copy()).float()
                 for axis in ["x", "y", "z"]
             ], dim=-1)
             pos_offset = pos[0]
@@ -73,12 +73,10 @@ def read_tracks_tile(
         if intensity:
             # Heuristic to bring the intensity distribution in [0, 1]
             # intensity_array = tile[key]['scalar_Intensity'].copy()
-            intensity_array = tile[key]['scalar_Intensity']
-            data.intensity = torch.FloatTensor(intensity_array).clip(min=0, max=60000) / 60000        
+            data.intensity = torch.FloatTensor(tile[key]['scalar_Intensity'].copy()).clip(min=0, max=60000) / 60000        
         if semantic:
             # classification_array = tile[key]['scalar_Classification'].copy()
-            classification_array = tile[key]['scalar_Classification']
-            y = torch.LongTensor(classification_array)
+            y = torch.LongTensor(tile[key]['scalar_Classification'].copy())
             data.y = torch.from_numpy(ID2TRAINID)[y] if remap else y
         # print("DEBUG: data.intensity =", data.intensity.shape if data.intensity is not None else None)
     return data
