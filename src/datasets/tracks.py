@@ -58,23 +58,26 @@ def read_tracks_tile(
     with open(filepath, "rb") as f:
         tile = PlyData.read(f)
         if xyz:
-            pos = torch.stack([
-                torch.from_numpy(tile[key][axis].copy()).float()
-                for axis in ["x", "y", "z"]
-            ], dim=-1)
+
             # pos = torch.stack([
-            #     torch.from_numpy(tile[key][axis]).float()
+            #     torch.from_numpy(tile[key][axis].copy()).float()
             #     for axis in ["x", "y", "z"]
             # ], dim=-1)
+            pos = torch.stack([
+                torch.from_numpy(tile[key][axis]).float()
+                for axis in ["x", "y", "z"]
+            ], dim=-1)
             pos_offset = pos[0]
             data.pos = pos - pos_offset
             data.pos_offset = pos_offset
         if intensity:
             # Heuristic to bring the intensity distribution in [0, 1]
-            intensity_array = tile[key]['scalar_Intensity'].copy()
+            # intensity_array = tile[key]['scalar_Intensity'].copy()
+            intensity_array = tile[key]['scalar_Intensity']
             data.intensity = torch.FloatTensor(intensity_array).clip(min=0, max=60000) / 60000        
         if semantic:
-            classification_array = tile[key]['scalar_Classification'].copy()
+            # classification_array = tile[key]['scalar_Classification'].copy()
+            classification_array = tile[key]['scalar_Classification']
             y = torch.LongTensor(classification_array)
             data.y = torch.from_numpy(ID2TRAINID)[y] if remap else y
         # print("DEBUG: data.intensity =", data.intensity.shape if data.intensity is not None else None)
