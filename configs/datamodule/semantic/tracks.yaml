@@ -26,7 +26,7 @@ partition_hf:
 
 # point features used for training
 point_hf:
-  - 'scalar_Intensity'
+  - 'intensity'
   - 'linearity'
   - 'planarity'
   - 'scattering'
