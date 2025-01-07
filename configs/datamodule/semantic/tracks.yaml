@@ -63,7 +63,7 @@ v_edge_hf: []  # vertical edge features used for training
 
 # Parameters declared here to facilitate tuning configs without copying
 # all the pre_transforms
-voxel: 0.08
+voxel: 0.1
 knn: 25
 knn_r: 10
 knn_step: -1
@@ -81,14 +81,14 @@ pcp_w_adjacency: 1
 pcp_iterations: 3
 graph_k_min: 1
 graph_k_max: 30
-graph_gap: [5, 30, 30]
+graph_gap: [5, 20, 20]
 # graph_gap: [2, 5, 5]
 graph_se_ratio: 0.3
 graph_se_min: 20
 # graph_cycles: 3
 graph_cycles: 3
 #graph_margin: 0.5
-graph_margin: 0.1
+graph_margin: 0.5s
 # graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 
