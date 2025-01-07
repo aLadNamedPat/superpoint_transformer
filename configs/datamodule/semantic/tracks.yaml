@@ -75,7 +75,7 @@ pcp_regularization: [0.005, 0.01, 0.05]
 pcp_spatial_weight: [1e-1, 1e-2, 1e-3]
 # pcp_spatial_weight: [1e-2, 1e-2, 1e-2]
 # pcp_cutoff: [10, 30, 100]
-pcp_cutoff: [2, 5, 10]
+pcp_cutoff: [2, 5, 5]
 pcp_k_adjacency: 10
 pcp_w_adjacency: 1
 pcp_iterations: 3
