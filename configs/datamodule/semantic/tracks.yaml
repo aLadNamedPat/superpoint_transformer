@@ -82,7 +82,7 @@ pcp_iterations: 3
 graph_k_min: 1
 graph_k_max: 30
 # graph_gap: [5, 15, 20]
-graph_gap: [2, 5, 5]
+graph_gap: [5, 10, 15]
 graph_se_ratio: 0.3
 graph_se_min: 20
 # graph_cycles: 3
