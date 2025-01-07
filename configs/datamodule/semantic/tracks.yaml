@@ -5,7 +5,7 @@ defaults:
 _target_: src.datamodules.tracks.TRACKSDataModule
 
 dataloader:
-    batch_size: 12
+    batch_size: 4
 
 # These parameters are not actually used by the DataModule, but are used
 # here to facilitate model parameterization with config interpolation
@@ -13,7 +13,7 @@ num_classes: 10
 stuff_classes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 trainval: True
 val_on_test: True
-xy_tiling: 1
+xy_tiling: 2
 
 # Features that will be computed, saved, loaded for points and segments
 
@@ -70,19 +70,19 @@ knn_step: -1
 knn_min_search: 10
 ground_threshold: 5
 ground_scale: 20
-# pcp_regularization: [0.1, 0.2, 0.3]
-pcp_regularization: [0.005, 0.01, 0.05]
-# pcp_spatial_weight: [1e-1, 1e-2, 1e-3]
-pcp_spatial_weight: [1e-2, 1e-2, 1e-2]
-# pcp_cutoff: [10, 30, 100]
-pcp_cutoff: [2, 5, 10]
+pcp_regularization: [0.1, 0.2, 0.3]
+# pcp_regularization: [0.005, 0.01, 0.05]
+pcp_spatial_weight: [1e-1, 1e-2, 1e-3]
+# pcp_spatial_weight: [1e-2, 1e-2, 1e-2]
+pcp_cutoff: [10, 30, 100]
+# pcp_cutoff: [2, 5, 10]
 pcp_k_adjacency: 10
 pcp_w_adjacency: 1
 pcp_iterations: 3
 graph_k_min: 1
 graph_k_max: 30
-# graph_gap: [5, 30, 30]
-graph_gap: [2, 5, 5]
+graph_gap: [5, 30, 30]
+# graph_gap: [2, 5, 5]
 graph_se_ratio: 0.3
 graph_se_min: 20
 # graph_cycles: 3
