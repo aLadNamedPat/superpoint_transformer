@@ -63,6 +63,7 @@ v_edge_hf: []  # vertical edge features used for training
 
 # Parameters declared here to facilitate tuning configs without copying
 # all the pre_transforms
+
 voxel: 0.1
 knn: 25
 knn_r: 10
@@ -71,26 +72,49 @@ knn_min_search: 10
 ground_threshold: 5
 ground_scale: 20
 pcp_regularization: [0.1, 0.2, 0.3]
-# pcp_regularization: [0.005, 0.01, 0.05]
 pcp_spatial_weight: [1e-1, 1e-2, 1e-3]
-# pcp_spatial_weight: [1e-2, 1e-2, 1e-2]
 pcp_cutoff: [10, 30, 100]
-# pcp_cutoff: [2, 5, 5]
 pcp_k_adjacency: 10
 pcp_w_adjacency: 1
-pcp_iterations: 3
+pcp_iterations: 15
 graph_k_min: 1
 graph_k_max: 30
-graph_gap: [5, 15, 20]
-# graph_gap: [2, 5, 5]
+graph_gap: [5, 30, 30]
 graph_se_ratio: 0.3
 graph_se_min: 20
-# graph_cycles: 3
 graph_cycles: 3
-#graph_margin: 0.5
 graph_margin: 0.5
-# graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
+
+
+# voxel: 0.1
+# knn: 25
+# knn_r: 10
+# knn_step: -1
+# knn_min_search: 10
+# ground_threshold: 5
+# ground_scale: 20
+# pcp_regularization: [0.1, 0.2, 0.3]
+# # pcp_regularization: [0.005, 0.01, 0.05]
+# pcp_spatial_weight: [1e-1, 1e-2, 1e-3]
+# # pcp_spatial_weight: [1e-2, 1e-2, 1e-2]
+# pcp_cutoff: [10, 30, 100]
+# # pcp_cutoff: [2, 5, 5] 
+# pcp_k_adjacency: 10
+# pcp_w_adjacency: 1
+# pcp_iterations: 3
+# graph_k_min: 1
+# graph_k_max: 30
+# graph_gap: [5, 30, 30]
+# # graph_gap: [2, 5, 5]
+# graph_se_ratio: 0.3
+# graph_se_min: 20
+# # graph_cycles: 3
+# graph_cycles: 3
+# #graph_margin: 0.5
+# graph_margin: 0.5
+# # graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
+# graph_chunk: [1e6, 1e5, 1e5]  # reduce if CUDA memory errors
 
 # Batch construction parameterization
 sample_segment_ratio: 0.2
